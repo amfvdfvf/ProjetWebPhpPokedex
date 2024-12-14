@@ -1,0 +1,140 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2639
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica-Bold;\f1\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;\red103\green103\blue103;\red127\green127\blue127;}
+{\*\expandedcolortbl;;\csgray\c47953;\cssrgb\c57046\c57047\c57046;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww28300\viewh15520\viewkind0
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f0\b\fs36 \cf0 TP  - CC2\
+PHP/html/css
+\f1\b0\fs24 \
+\
+\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f0\b \cf0 Objectif
+\f1\b0  : \
+Cr\'e9er une page de consultation de pokemons s'appuyant sur une API tierse ({\field{\*\fldinst{HYPERLINK "https://tyradex.vercel.app/"}}{\fldrslt https://tyradex.vercel.app/}})\
+\
+
+\f0\b Note : \
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f1\b0 \cf0 Toutes les instructions en \cf2 gris\cf0  sont optionnelles et permettent d'obtenir \ul tous\ulnone  les points.\
+\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f0\b \cf0 Structure du projet :
+\f1\b0 \
+- index.php\
+- traitement.php\
+- deconnexion.php\
+\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f0\b\fs28 \cf0 A - Partie PHP (14pts)
+\f1\b0\fs24 \
+\
+Contenu de la page index.php\
+\
+- Si la session utilisateur ne contient pas un param\'e8tre 'pseudo'  :\
+\
+	Afficher un formulaire d'identification :\
+		- un champ pseudo\
+		- un champ cach\'e9 contenant l'attribut name 'identification'\
+		- un bouton d'envoi du formulaire\
+	\
+	Ce formulaire est envoy\'e9 \'e0 traitement.php (m\'e9thode post) :\
+		- si un param\'e8tre 'identification' est re\'e7u :\
+			- si le champ pseudo est vide : redirection vers le formulaire avec un message d'erreur "Le champ pseudo est vide !"\
+			- ouverture d'une session avec le param\'e8tre 'pseudo' contenant la valeur re\'e7ue\
+			- connexion \'e0 l'API et enregistrement des donn\'e9es sous forme de tableau dans la session utilisateur (param\'e8tre 'pokemons')\
+			NB : Le code permettant la connexion \'e0 l'API et la conversion de la r\'e9ponse en tableau PHP est fourni en annexe.\
+			\cf2 - cr\'e9ation d'un tableau 'types' et d'un tableau 'generations' enregistr\'e9s dans la session\cf0 \
+			- redirection vers la page index.php\
+\
+- Sinon  :\
+	
+\f0\b 1 - 
+\f1\b0 Affichage dans le header du pseudo contenu dans la session\
+	Au survol de ce pseudo, affichage d'une liste contenant :\cf2 \
+		\cf0 - un lien vers l'historique des recherches (ancre)\cf2 \
+		\cf0 - un lien de d\'e9connexion (vers le fichier deconnexion.php qui se charge de supprimer la session et de rediriger vers index.php)\
+\
+	2 - Affichage d'un formulaire de recherche de pokemon :\
+		- un champ 'nom'\
+		- un champ 'identifiant'\
+		\cf2 - une liste d\'e9roulante 'type' (d'apr\'e8s les infos enregistr\'e9es dans la session)\
+		- une liste d\'e9roulante 'g\'e9n\'e9ration' (d'apr\'e8s les infos enregistr\'e9es dans la session)\cf0 \
+		- un champ cach\'e9 'recherche'\
+		- un bouton d'envoi du formulaire\
+	\
+	Ce formulaire est envoy\'e9 \'e0 traitement.php (m\'e9thode get) :\
+		- si un param\'e8tre 'recherche' est re\'e7u: \
+			- si le param\'e8tre 'nom' n'est pas vide :\
+				- d\'e9claration d'une variable $result = 0;\
+				- parcourir le tableau 'pokemons' pr\'e9sent dans la session : \
+					- si le param\'e8tre 'nom' de l'\'e9l\'e9ment courant est \'e9gal au nom recherch\'e9 \
+					(attention aux majuscules... solution : comparer les noms en minuscule avec strtolower) : \
+						- mettre l'index de l'\'e9l\'e9ment courant dans la variable $result\
+						- arr\'e9ter la boucle foreach (break)\
+						- rediriger vers la page index.php avec un param\'e8tre 'id' \'e9gal \'e0 la valeur de $result (ex. index.php?id=23)\
+					- si aucun \'e9l\'e9ment du tableau 'pokemons' n'a un 'nom' correspondant \'e0 la recherche :\
+						- rediriger vers la page index.php avec un param\'e8tre 'id' \'e9gal \'e0 'undefined'\
+			- si le param\'e8tre 'identifiant' n'est pas vide :\
+					- rediriger vers la page index.php avec un param\'e8tre 'id' \'e9gal \'e0 la valeur re\'e7ue (ex. index.php?id=23)\
+			\
+	Note : les param\'e8tres de recherche (nom ou id) sont stock\'e9s dans des cookies, permettant de pr\'e9-remplir le formulaire de recherche.	\
+	3 - Affichage du r\'e9sultat de la recherche\
+		- si un param\'e8tre id existe dans l'url :\
+			- si ce param\'e8tre est un nombre :\
+				- si le tableau des pokemons pr\'e9sent dans la session contient un index \'e9gal au param\'e8tre id :\
+					- d\'e9finir une variable $pokemon contenant la valeur correspondante\
+						- affichage d'un <article> contenant le nom, l'id, les types, la g\'e9n\'e9ration et l'image du pokemon\
+						- ajout de l'id et du nom du pokemon \'e0 la session, dans un param\'e8tre 'historique' ($_SESSION['historique'][id_du_pokemon] = 'nom_du_pokemon')				- sinon :\
+					- affichage d'un message d'erreur : 'Pokemon introuvable'\
+			- sinon :\
+				affichage d'un message d'erreur : 'Identifiant incorrect'\
+	\
+	4 - Affichage de l'historique de recherche\
+		- si la session contient un param\'e8tre 'historique' vide :\
+			- afficher 'Aucun pokemon dans l'historique'\
+		-sinon :\
+			- ouvrir une balise <ul>\
+			- parcourir le tableau $_SESSION['historique'] :\
+				- pour chaque \'e9l\'e9ment du tableau ajouter une <li> contenant un lien vers le pokemon concern\'e9 (ce lien contient le nom du pokemon)\
+				NB : pour construire l'url du lien, vous aurez besoin de la superglobale $_SERVER\
+			- refermer la balise <ul>\
+			\
+	\
+\
+
+\f0\b\fs28 B - Partie html/css (6pts)\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f1\b0\fs24 \cf0 \
+	Cr\'e9er une feuille de style nomm\'e9e style.css\
+	Ecrire les styles afin d'obtenir un r\'e9sultat tel que les captures d'\'e9cran fournies en annexe.\
+	Reposez-vous sur l'unit\'e9 rem (0.25rem, 0.5rem, ...)\
+	La police de caract\'e8re est Inter de Google Fonts\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+\cf3 \
+\
+
+\f0\b\fs28 C - Partie javascript 
+\f1\b0\fs24 \
+	\
+	- Faire en sorte qu'au clic sur le champ 'nom', le champ 'identifiant' se vide.\
+	- De la m\'eame mani\'e8re, au clic sur le champ 'identifiant', le champ 'nom' se vide.\cf0 \
+	\
+\
+
+\f0\b\fs28 \cf3 D - Optimisation du code PHP
+\f1\b0\fs24 \cf0 \
+\
+\cf3 	- D\'e9finir des fonctions utilitaires du type getPokemon($value)\
+	- Mettre les diff\'e9rents \'e9l\'e9ments de la page index.php dans des fichiers ind\'e9pendants \'e0 inclure (header, footer, message d'erreur, formulaires...)\cf0 \
+\
+\
+Si vous avez une question : edouard@voltajazz.com\
+	}
